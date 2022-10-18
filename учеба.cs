@@ -3,6 +3,7 @@ public class Signal : MonoBehaviour
     [SerializeField] private UnityEvent _reached;
     [SerializeField] private AudioSource _audio;
     [SerializeField] private float _duration;
+    [SerializeField] private float _speed;
 
     private float _runningTime;
     private float _target = 1f;
@@ -32,9 +33,9 @@ public class Signal : MonoBehaviour
         _volumeScale = _runningTime / _duration;
         _audio.Play();
 
-        for (int i = 0; i < _duration; i++)
+        for (int i = 0; i < 255; i++)
         {
-            _audio.volume = Mathf.MoveTowards(_audio.volume, _target, _volumeScale);
+            _audio.volume = Mathf.MoveTowards(_audio.volume, _target, _speed*Time.deltaTime);
             yield return null;
         }
     }
@@ -43,11 +44,10 @@ public class Signal : MonoBehaviour
     {
         _runningTime += Time.deltaTime;
         _volumeScale = _runningTime / _duration;
-        _audio.Play();
 
-        for (int i = 0; i < _duration; i++)
+        for (int i = 0; i < 255; i++)
         {
-            _audio.volume = Mathf.MoveTowards(_audio.volume, 0f, _volumeScale);
+            _audio.volume = Mathf.MoveTowards(_audio.volume, 0f, _speed * Time.deltaTime);
             yield return null;
         }
     }
