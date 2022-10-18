@@ -18,11 +18,12 @@ public class Signal : MonoBehaviour
     {
         _runningTime += Time.deltaTime;
         volumeScale = _runningTime / _duration;
+
         if (collision.TryGetComponent<Player>(out Player player))
         {
-            //StartCoroutine(FadeIn());
+            StartCoroutine(FadeIn());
             _audio.Play();
-            _audio.volume = Mathf.MoveTowards(_audio.volume,target, volumeScale);
+            //_audio.volume = Mathf.MoveTowards(_audio.volume,target, volumeScale);
         }
     }
 
@@ -35,6 +36,5 @@ public class Signal : MonoBehaviour
     {
         _runningTime = 0;
         _runningTime += Time.deltaTime;
-        _audio.volume += _runningTime;
         yield return null;
     }
