@@ -4,26 +4,21 @@ public class Signal : MonoBehaviour
     [SerializeField] private AudioSource _audio;
     [SerializeField] private float _duration;
 
-
     private float _runningTime;
-    private float target = 3f;
-    private float volumeScale;
+    private float _target = 1f;
+    private float _volumeScale;
 
     private void Start()
     {
-        _audio.volume = 0.1f;
+        _audio.volume = 0.01f;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        _runningTime += Time.deltaTime;
-        volumeScale = _runningTime / _duration;
-
         if (collision.TryGetComponent<Player>(out Player player))
         {
             StartCoroutine(FadeIn());
             _audio.Play();
-            //_audio.volume = Mathf.MoveTowards(_audio.volume,target, volumeScale);
         }
     }
 
@@ -32,9 +27,14 @@ public class Signal : MonoBehaviour
         _audio.Stop();
     }
 
-    private IEnumerable FadeIn()
+    private IEnumerator FadeIn()
     {
-        _runningTime = 0;
         _runningTime += Time.deltaTime;
-        yield return null;
+        _volumeScale = _runningTime / _duration;
+
+        for (int i = 0; i < _duration; i++)
+        {
+            _audio.volume = Mathf.MoveTowards(_audio.volume, _target, _volumeScale);
+            yield return null;
+        }
     }
