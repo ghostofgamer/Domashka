@@ -3,9 +3,9 @@ public class Signal : MonoBehaviour
     [SerializeField] private AudioSource _audio;
     [SerializeField] private float _speed;
 
-    private float _runningTime;
     private float _targetMaxVolume = 1f;
     private float _targetMinVolume = 0f;
+    private Coroutine _coroutine;
 
     private void Start()
     {
@@ -24,34 +24,33 @@ public class Signal : MonoBehaviour
     {
         if (collision.TryGetComponent<Player>(out Player player))
         {
-            StartCoroutine(FadeOff());
+            _coroutine =  StartCoroutine(FadeOff());
         }
     }
 
     private IEnumerator FadeIn()
     {
-        _runningTime += Time.deltaTime;
         _audio.Play();
 
-        for (int i = 0; i < 1000; i++)
+        while (_audio.volume != _targetMaxVolume)
         {
             _audio.volume = Mathf.MoveTowards(_audio.volume, _targetMaxVolume, _speed * Time.deltaTime);
+
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+            }
             yield return null;
         }
     }
 
     private IEnumerator FadeOff()
     {
-        _runningTime += Time.deltaTime;
+        _audio.Play();
 
-        for (int i = 0; i < 1000; i++)
+        while (_audio.volume != _targetMinVolume)
         {
             _audio.volume = Mathf.MoveTowards(_audio.volume, _targetMinVolume, _speed * Time.deltaTime);
-
-            if (_audio.volume < 0.1)
-            {
-                _audio.Stop();
-            }
             yield return null;
         }
     }
